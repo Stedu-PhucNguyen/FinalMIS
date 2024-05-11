@@ -1,0 +1,209 @@
+{{getUsername username}}
+<div class="dashboard-container">
+    <div class="grid-container">
+        <div class="row box-infor-container">
+            <div class="col box-infor-item" style="background-color: rgb(255, 55, 195);">
+                <div class="box-infor-item_icon">
+                    <i style="font-size: 30px; color:rgb(255, 255, 255);" class="fa-solid fa-person"></i>
+                </div>
+                <div class="box-infor-item_number" style="color: #fff;">
+                    <h4>{{totalEmployees}}</h4>
+                    <p>Employees</p>
+                </div>
+            </div>
+            <div class="col box-infor-item" style="background-color: rgb(115, 55, 255);">
+                <div class="box-infor-item_icon">
+                    <i style="font-size: 30px; color:rgb(61, 255, 103);" class="fa-solid fa-money-check-dollar"></i>
+                </div>
+                <div class="box-infor-item_number"  style="color: #fff;">
+                    <h4>${{totalSaleAmount}}</h4>
+                    <p>Total Sale Amount </p>
+                </div>
+                
+            </div>
+            <div class="col box-infor-item" style="background-color: rgb(231, 82, 82);">
+                <div class="box-infor-item_icon">
+                    <i style="font-size: 30px; color:rgb(214, 211, 21);" class="fa-solid fa-tags"></i>
+                </div>
+                <div class="box-infor-item_number" style="color: #fff;">
+                    <h4>{{brandAmount}}</h4>
+                    <p>Brands</p>
+                </div>
+            </div>
+        </div>
+        <div class="row box-infor-container">
+            <div class="col box-infor-item" style="background-color: #ff9f43;">
+                <div class="box-infor-item_customer-number">
+                    <h3>{{customerAmount}}</h3>
+                    <p>Customers</p>
+                </div>
+                <div class="box-infor-item_customer-icon">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+            </div>
+            <div class="col box-infor-item" style="background-color: #00cfe8;">
+                <div class="box-infor-item_customer-number">
+                    <h3>{{productAmount}}</h3>
+                    <p>Products</p>
+                </div>
+                <div class="box-infor-item_customer-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+            </div>
+            <div class="col box-infor-item" style="background-color: #1b2850;">
+                <div class="box-infor-item_customer-number">
+                    <h3>{{orderAmount}}</h3>
+                    <p>Purchase Invoice</p>
+                </div>
+                <div class="box-infor-item_customer-icon">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+            </div>
+            <div class="col box-infor-item" style="background-color: #28c76f;">
+                <div class="box-infor-item_customer-number">
+                    <h3>{{orderAmount}}</h3>
+                    <p>Sale Invoice</p>
+                </div>
+                <div class="box-infor-item_customer-icon">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row box-infor-container">
+            <div class="dashboard-container-body">
+                <div class="dashboard-container-item">
+                    <h2 class="" style="color: #97a2d2; ">Total Amount 7 Days</h2>
+                    <div id="chart" style="width:300px; height:300px; background-color:rgb(61, 3, 27); border: 1px solid #353570; border-radius: 5px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Button trigger modal -->
+<button hidden type="button" class="btn btn-primary show-modal" data-toggle="modal" data-target="#exampleModalCenter">
+  Launch demo modal
+</button>
+
+<!-- Modal remind user changing password-->
+{{!-- Ngăn người dùng click vào vùng xung quanh của modal là thuộc tính data-backdrop="static" --}}
+<div class="modal fade" id="exampleModalCenter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Change Your Password</h5>
+      </div>
+      <div class="modal-body">
+        Your password hasn't been changed yet, you must change your password !
+      </div>
+      <div class="modal-footer">
+        <a href="/change-password" type="button" class="btn btn-danger">Change Password</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- Modal notice banned -->
+{{!-- Thông báo staff đã bị cấm --}}
+<div class="modal fade" id="blockNoticeModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">You have been blocked!</h5>
+      </div>
+      <div class="modal-body">
+        Your account have been blocked by admin, please contact admin to recovery you account!
+      </div>
+      <div class="modal-footer">
+        <a href="/logout" type="button" class="btn btn-danger">Login Page</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function(){
+      // Simulate a click on the button with id="saveChangesBtn"
+      // Get the 'change' variable from the server
+        var change = {{ change }};
+        console.log(change)
+
+        // Optional: Open the modal programmatically
+        if (change === 0) {
+            $('#exampleModalCenter').modal('show');
+        }
+        $('.overlay').click(e => {
+            e.preventDefault()
+        })
+        var blocked = {{ blocked }};
+        console.log(blocked)
+
+        // Optional: Open the modal programmatically
+        if (blocked === 1) {
+            $('#blockNoticeModal').modal('show');
+        }
+
+       
+         $.ajax({
+            url: "/view/today",
+            method: "GET",
+            dataType: 'json',
+            success: function (data) {
+
+            var margin = { top: 20, right: 20, bottom: 30, left: 40 },
+            width = 420 - margin.left - margin.right,
+            height = 200 - margin.top - margin.bottom;
+            var x = d3.scale.ordinal()
+            .domain(data.map(d => d.date))
+            .rangeBands([0, width]);
+
+            var y = d3.scale.linear()
+            .domain([0, d3.max(data, d => d.totalAmount)])
+            .range([0, height]);
+
+           var xAxis = d3.axisBottom()
+            .scale(x);
+
+            var yAxis = d3.axisLeft()
+            .scale(y);
+
+            d3.select("#chart").attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var barWidth = width / data.length;
+
+            d3.select("#chart").append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height + margin.bottom - 10)
+            .text("Date")
+            .style("color", "#fff");
+
+            d3.select("#chart").append("text")
+            .attr("class", "y label")
+            .attr("text-anchor", "end")
+            .attr("y", -margin.left + 10)
+            .attr("dy", ".75em")
+            .attr("transform", "rotate(-90)")
+            .text("Total Amount")
+            .style("color", "#fff");
+
+              d3.select("#chart")
+                .selectAll("div")
+                .data(data)
+                .enter().append("div")
+                .attr("y", d => y(d.totalAmount))
+                .style("height", d => y(d.totalAmount) + "px")
+                .attr("x", d => x(d.date))
+                .style("width", barWidth + "%")
+                .style("margin-right", "5px")
+                .text(d => `${d.totalAmount}`);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", status, error);
+            }
+            });
+})
+</script>

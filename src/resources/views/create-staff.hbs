@@ -1,0 +1,117 @@
+<div class="body-container">
+    <div class="grid-container">
+        <div class="header-product">
+            <div class="header-product-left">
+                <h4>Employees Add</h4>
+                <p>Create new Employees</p>
+            </div>
+        </div>
+        <form action="/staff/create-staff" method="post" enctype="multipart/form-data">
+        <div class="product-list-container">
+            <div style="margin-left: 50px;" class="create-product-row row">
+                <div class="col create-product-item">
+                    <h6>Fullname</h6>
+                    <input style="width: 300px;" type="text"name="fullName">
+                </div>
+                <div class="col create-product-item">
+                    <h6>Email</h6>
+                    <input style="width: 300px;" type="text"name="email">
+                </div>
+                <div class="col create-product-item">
+                    <h6>Role</h6>
+                    <select name="role" id="role">
+                        <option value="">Choose Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="staff">Staff</option>
+                    </select>
+                </div>
+                <div hidden class="col create-product-item">
+                    <h6>Change Staff</h6>
+                    <input value="0" type="text" name="change">
+                </div>
+                <div hidden class="col create-product-item">
+                    <h6>Verified Staff</h6>
+                    <input value="0" type="text" name="verified">
+                </div>
+                <div hidden class="col create-product-item">
+                    <h6>blocked Staff</h6>
+                    <input value="0" type="text" name="blocked">
+                </div>
+            </div>
+            <div style="margin-left: 50px;" class="create-product-row row">
+                <div class="col create-product-item">
+                    <h6>Choose Image</h6>
+                    <label for="file-input" class="file-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Drag and drop a file to upload
+                    </label>
+                    <input type="file" id="file-input" class="custom-file-input" name="image">
+                    <img id="preview-image" style="max-width: 30%; max-height:100%; margin-top: 10px; display: none;">
+                    {{#if showAlert}}
+                        {{#if code}}
+                            <div class="alert alert-success mr-5 mt-3" role="alert" id="successAlert">
+                                {{message}}
+                            </div>
+                        {{else}}
+                            <div class="alert alert-danger mr-5 mt-3" role="alert" id="errorAlert">
+                                {{message}}
+                            </div>
+                        {{/if}}
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div style="margin-left: 50px; text-align:center" class="create-product-row row">
+                
+                <div class="col create-product-item">
+                    <button class="create-submit-btn" type="submit">Submit</button>
+                    <a class="create-cancel-btn" href="/product">Cancel</a>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+    
+</div>
+<script>
+    const form = $('.create-submit-btn')
+    const fullNameValue = $('input[name="fullName"]');
+    const emailValue = $('input[name="email"]');
+
+    form.click(e => {
+        window.location.reload()
+    })
+    const checkDisplay = {{showAlert}}
+    console.log(checkDisplay)
+    if(checkDisplay) {
+        setTimeout(function() {
+            $('#errorAlert').css('display', 'none');
+            $('#successAlert').css('display', 'none');
+        }, 6000);
+    }
+
+    //Name of the file appear on select
+      $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this)
+          .siblings(".file-label")
+          .addClass("selected")
+          .html(fileName);
+
+        // Display the image preview
+        const fileInput = this;
+        const file = fileInput.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const previewImage = $("#preview-image");
+                previewImage.attr("src", e.target.result);
+                previewImage.show();
+            };
+
+            reader.readAsDataURL(file);
+        }
+      });
+</script>

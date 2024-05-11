@@ -1,0 +1,266 @@
+<div class="body-container">
+    <div class="grid-container">
+        <div class="header-product">
+            <div class="header-product-left">
+                <h4>Admin List</h4>
+                <p>Manage Admin</p>
+            </div>
+            <div class="header-product-right">
+                <a href="/staff/create-staff" class="adding-product-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <h5>Adding new admin</h5>
+                </a>
+            </div>
+        </div>
+
+        <div class="product-list-container">
+            <div class="product-container">
+                <div class="product-filter-icon">
+                    <button class="product-filter-btn"><i class="fa-solid fa-filter"></i></button>
+                </div>
+                <div class="product-search">
+                    <div class="product-search_icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <div class="product-search_box">
+                        <input type="text" id="product-search-box" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="product-file-icon">
+                    <a href="/create-pdf"><i class="fa-solid fa-file-pdf"></i></a>
+                </div>
+                <table class="table product-table" id="productTable">
+                    <thead >
+                        <tr class="profile-header">
+                            <th scope="col"><input class="product-checkbox-input" type="checkbox" name="all-staffs"></th>
+                            <th scope="col"><i class="fa-solid fa-sort icon-sort"></i>User Name</th>
+                            <th scope="col"><i class="fa-solid fa-sort icon-sort"></i>Email</th>
+                            <th scope="col"><i class="fa-solid fa-sort icon-sort"></i>Role</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each admin}}
+                            {{#if (isAdmin role)}}
+                                <tr>
+                                    <th scope="row"><input class="product-checkbox-input" type="checkbox" name="staffs"></th>
+                                    <td><img class="staff-img" src="{{image}}" alt=""><span style="margin-left:10px;">{{username}}</span></td>
+                                    <td>{{email}}</td>
+                                    <td>{{role}}</td>
+                                    <td class="product-action">
+                                        <a class="product-list-item_info_link" href="/staff/edit/{{_id}}"><i class="fa-regular fa-eye"></i></a>
+                                        {{#if (isSent ../globalData.permission)}}
+                                            <a data-email="{{email}}" data-username="{{username}}" class="staff-send-email_info_link ml-2" href="/staff/resend/{{email}}"><i class="fa-solid fa-envelope-circle-check"></i></a>
+                                        {{/if}}
+                                        <a class="product-list-item_info_link ml-2" href="/staff/edit/{{_id}}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a data-staffname="{{username}}" data-id="{{_id}}" class="delete-staff-link product-list-item_info_link ml-2" href="/staff/delete/{{_id}}"><i class="fa-solid fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            {{/if}}
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+    {{!-- Delete modal --}}
+   <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete staff <strong id="productNameInModal"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal noticeSuccessResendEmail-->
+{{!-- Ngăn người dùng click vào vùng xung quanh của modal là thuộc tính data-backdrop="static" --}}
+<div class="modal fade" id="noticeSuccessResendEmail" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Success Message</h5>
+      </div>
+      <div class="modal-body bg-success">
+        Resend email successfully!
+      </div>
+    </div>
+  </div>
+</div>
+
+ <div class="modal fade" id="blockNoticeModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">No admin found</h5>
+                    </div>
+                    <div class="modal-body">
+                        Please check if admin's name is valid. Then search again!
+                    </div>
+                   <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('input[name="all-staffs"]').change(function() {
+            $('input[name="staffs"]').prop('checked', this.checked);
+        });
+    
+
+        $('input[name="staffs"]').change(function() {
+            if (!$('input[name="staffs"]').not(':checked').length) {
+                $('input[name="all-staffs"]').prop('checked', true);
+            } else {
+                $('input[name="all-staffs"]').prop('checked', false);
+            }
+        });
+
+        $(".delete-staff-link").on("click", function (e) {
+            console.log(123)
+            e.preventDefault()
+            var staffName = $(this).data("staffname");
+            var staffID = $(this).data("id");
+            $("#productNameInModal").text(staffName);
+            $("#confirmModal").modal("show");
+
+            $("#confirmDelete").on("click", function () {
+                $.ajax({
+                    url: `/staff/delete/${staffID}`,
+                    method: "DELETE",
+                    dataType: "json", 
+                    success: function (data) {            
+                        console.log(data)
+                        window.location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", status, error);
+                    }
+                });
+                $("#confirmModal").modal("hide");
+            });
+        });
+
+        $(".staff-send-email_info_link").on("click", function (e) {
+            e.preventDefault()   
+            var staffEmail = $(this).data("email");
+            var staffUsername = $(this).data("username");
+            $.ajax({
+                url: `/staff/resend/${staffEmail}`,
+                method: "POST",
+                dataType: "json", 
+                data: {
+                    username:staffUsername
+                },
+                success: function (data) {            
+                    console.log(data)
+                    $('#noticeSuccessResendEmail').modal('show')
+                    setTimeout(() => {
+                        $('#noticeSuccessResendEmail').modal('hide')
+                    },3000)
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", status, error);
+                }
+            });
+        });
+
+        //block staff account for the button after append row
+        $(document).on('click', '.block-staff_link', function(e) {
+            e.preventDefault()  
+            console.log("Add butotn") 
+            var staffID = $(this).data("id");
+            const isBLocked = $(this).data("blocked");
+            const blockBtn = $(this);
+            console.log(isBLocked)
+            
+            $.ajax({
+                url: `/staff/block/${staffID}`,
+                method: "POST",
+                dataType: "json",
+                data: {
+                    blocked:isBLocked
+                },
+                success: function (data) {         
+                    
+                    console.log(data)
+                    //blockBtn.toggleClass("blocked");
+                    blockBtn.data("blocked", data);
+                    window.location.reload()
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", status, error);
+                }
+            });
+        })
+
+        //hanlde search staff box
+        $('#product-search-box').on('change', function() {
+            const searchTerm = $(this).val();
+                $.ajax({
+                url: '/staff/search',
+                method: 'POST',
+                data: { searchTerm: searchTerm },
+                dataType: 'json',
+                success: function (data) {
+                    if(data.length !== 0) {
+                        console.log(data)
+                        // Display the results
+                        const productTable = $('#productTable');
+                        const tableBody = productTable.find('tbody');
+                        console.log($("#productTable tbody tr").length)
+                        $("#productTable tbody tr").remove()
+                        
+                        data.forEach(function (result) {
+                            if(result.role === 'admin') {
+                                const newRow = `
+                                    <tr>
+                                        <th scope="row"><input class="product-checkbox-input" type="checkbox" name="staffs"></th>
+                                        <td><img class="staff-img" src="${result.image}" alt=""><span style="margin-left:10px;">${result.username}</span></td>
+                                        <td>${result.email}</td>
+                                        <td>${result.role}</td>
+                                        <td class="product-action">
+                                            <a class="product-list-item_info_link" href="/staff/edit/${result._id}"><i class="fa-regular fa-eye"></i></a>
+                                            {{#if (isSent globalData.permission)}}
+                                                <a data-email="${result.email}" data-username="${result.username}" class="staff-send-email_info_link ml-2" href="/staff/resend/${result.email}"><i class="fa-solid fa-envelope-circle-check"></i></a>
+                                            {{/if}}
+                                            <a class="product-list-item_info_link ml-2" href="/staff/edit/${result._id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                            <a data-staffname="${result.username}" data-id="${result._id}" class="delete-staff-link product-list-item_info_link ml-2" href="/staff/delete/${result._id}"><i class="fa-solid fa-trash"></i></a>
+                                        </td>
+                                </tr>`;
+                                tableBody.append(newRow);
+                            }
+
+                        });
+                    } else {
+                        $("#productTable tbody tr").remove()
+                        $('#blockNoticeModal').modal('show');
+                    }
+                
+                },
+                error: function (err) {
+                    console.error('Error:', err);
+                }
+            });          
+        });      
+        
+    });
+</script>
+{{!-- Khi dùng ajax thì phải dùng phương thức POST mới có thể gửi dữ liệu đi được,
+ dùng get không thể gửi dữ liệu đi --}}

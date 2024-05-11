@@ -1,0 +1,81 @@
+<div class="header-container">
+    <div class="header-search">
+        <div class="header-search_icon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="header-search_box">
+            <input type="text" id="search-box" placeholder="Search">
+        </div>
+    </div>
+
+    <div class="header-nav">
+        <div class="setting-btn_container">
+            <button class="setting-btn">
+                <a class="setting-btn_link" href=""><i class="fa-regular fa-bell"></i></a>
+            </button>
+            <button class="setting-btn">
+                <a class="setting-btn_link" href=""><i class="fa-solid fa-gear"></i></a>
+            </button>
+        </div>
+        
+        <div class="profile-btn">
+            {{#if username}}
+                <h2>{{username}}</h2>
+                <h5>{{role}}</h5>
+            {{/if}}
+             {{#if globalData.username}}
+                <h2>{{globalData.username}}</h2>
+                <h5>{{globalData.role}}</h5>
+            {{/if}}
+            <div class="profile-subnav">
+                <div class="profile-btn profile-header">
+                    {{#if username}}
+                        <h2>{{username}}</h2>
+                        <h5>{{role}}</h5>
+                    {{/if}}
+                    {{#if globalData.username}}
+                        <h2>{{globalData.username}}</h2>
+                        <h5>{{globalData.role}}</h5>
+                    {{/if}}
+                </div>
+                <div class="profile-body">
+                    {{#if username}}
+                    <a href="/profile/{{id}}">
+                        <i class="fa-regular fa-user"></i>
+                        My Profle</a>
+                    {{/if}}
+                    {{#if globalData.username}}
+                    <a href="/profile/{{globalData.id}}">
+                        <i class="fa-regular fa-user"></i>
+                        My Profle</a>
+                    {{/if}}
+                    <a href="">
+                        <i class="fa-solid fa-gear"></i>
+                        Setting</a>
+                </div>
+                <div class="profile-body">
+                    <a href="/logout">
+                        <i style="color: red;" class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="arrow-down-up">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        
+    </div>
+
+</div>
+<script>
+    const profileBtn = $('.profile-btn')
+    const arrowBtn = $('.arrow-down-up')
+    const profileSubnav = $('.profile-subnav')
+
+    profileBtn.click(() => {
+        profileSubnav.toggleClass('open')
+    })
+    arrowBtn.click(() => {
+        profileSubnav.toggleClass('open')
+    })
+</script>
